@@ -16,15 +16,15 @@ export default function HeroSection() {
         <p className="hero-tagline">Know first. Buy first.</p>
         <div className="hero-badge">
           <span className="badge-dot" />
-          TREND DATA UPDATED EVERY 30 MINUTES
+          TREND DATA UPDATED HOURLY
         </div>
         <h1 className="hero-headline">
           Know what kids want<br />
           <span className="hero-highlight">before they ask.</span>
         </h1>
         <p className="hero-sub">
-          Real-time signals from Google, Amazon, eBay, TikTok, and Reddit —
-          so you buy at retail before it hits $95 on eBay.
+          Real-time signals from Google Trends, Amazon, and eBay —
+          so you buy at retail before resale prices explode.
         </p>
       </div>
     </header>

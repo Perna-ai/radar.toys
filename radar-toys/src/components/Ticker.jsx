@@ -17,13 +17,13 @@ export default function Ticker({ toys, content }) {
           "🎯 RADAR.TOYS — KNOW FIRST. BUY FIRST.",
         ];
 
-  // Duplicate for seamless loop
-  const doubled = [...items, ...items];
+  // Triple for seamless loop (ensures no gaps)
+  const tripled = [...items, ...items, ...items];
 
   return (
     <div className="ticker-wrap">
       <div className="ticker-inner">
-        {doubled.map((item, i) => (
+        {tripled.map((item, i) => (
           <span key={i}>
             {item}
             <span className="ticker-sep">●</span>

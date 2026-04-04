@@ -4,6 +4,7 @@ import ToyCard from "./components/ToyCard";
 import Ticker from "./components/Ticker";
 import HeroSection from "./components/HeroSection";
 import FilterBar from "./components/FilterBar";
+import SortBar from "./components/SortBar";
 import PredictionsSection from "./components/PredictionsSection";
 import EmailSignup from "./components/EmailSignup";
 
@@ -12,6 +13,7 @@ export default function App() {
   const [content, setContent] = useState({});
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("heat-desc");
 
   useEffect(() => {
     fetchData();
@@ -39,22 +41,42 @@ export default function App() {
 
   const categories = ["all", ...new Set(toys.map((t) => t.category).filter(Boolean))];
 
-  const filtered =
+  let filtered =
     filter === "all"
       ? toys
       : toys.filter((t) => t.category === filter);
+  
+  // Apply sorting
+  filtered = [...filtered].sort((a, b) => {
+    switch (sortBy) {
+      case "heat-desc":
+        return (b.heat_score || 0) - (a.heat_score || 0);
+      case "heat-asc":
+        return (a.heat_score || 0) - (b.heat_score || 0);
+      case "price-desc":
+        return (b.retail_price || 0) - (a.retail_price || 0);
+      case "price-asc":
+        return (a.retail_price || 0) - (b.retail_price || 0);
+      case "name-asc":
+        return (a.name || "").localeCompare(b.name || "");
+      default:
+        return 0;
+    }
+  });
 
   const trending = filtered.filter((t) => t.status === "Peak Demand");
   const rising = filtered.filter((t) => t.status === "Rising Fast");
-  const emerging = filtered.filter((t) => t.breakout_flag);
+  const emerging = filtered.filter((t) => t.status === "Emerging" || t.breakout_flag);
+  
+  // If no toys in any tier, show all filtered toys
+  const hasAnyToys = trending.length + rising.length + emerging.length > 0;
+  const allFiltered = hasAnyToys ? [] : filtered;
 
   return (
     <div className="app">
       <Ticker toys={toys} content={content} />
       <HeroSection />
       <main className="main">
-        <FilterBar categories={categories} active={filter} onChange={setFilter} />
-
         {loading ? (
           <div className="loading-state">
             <div className="loading-dots">
@@ -64,6 +86,10 @@ export default function App() {
           </div>
         ) : (
           <>
+            <div className="controls-bar">
+              <FilterBar categories={categories} active={filter} onChange={setFilter} />
+              <SortBar sortBy={sortBy} onChange={setSortBy} />
+            </div>
             {trending.length > 0 && (
               <Section title="🔥 Peak Demand" subtitle="Selling out now — act fast" toys={trending} content={content} />
             )}
@@ -72,6 +98,9 @@ export default function App() {
             )}
             {emerging.length > 0 && (
               <Section title="🌱 On Our Radar" subtitle="Our model says these break out soon" toys={emerging} content={content} prediction />
+            )}
+            {allFiltered.length > 0 && (
+              <Section title="📦 All Products" subtitle="Browse the full catalog" toys={allFiltered} content={content} />
             )}
             <EmailSignup />
           </>

@@ -1,8 +1,11 @@
 const LABEL_MAP = {
   all: "All Toys",
-  "Sensory / Squishies": "🫧 Squishies",
-  "Collectible Plush": "🧸 Plush",
-  "Trading Cards": "🃏 Cards",
+  "Squishies": "🫧 Squishies",
+  "Plush": "🧸 Plush",
+  "Cards": "🃏 Cards",
+  "Dolls": "👧 Dolls",
+  "Collectibles": "🎯 Collectibles",
+  "Action Figures": "🤖 Figures",
 };
 
 export default function FilterBar({ categories, active, onChange }) {

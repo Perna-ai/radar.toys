@@ -22,8 +22,29 @@ const TAG_STYLES = {
   TRENDING:        { bg: "rgba(52,199,89,0.12)", color: "#1a7a35", border: "rgba(52,199,89,0.3)" },
 };
 
+// Category-specific emojis for placeholders
+const CATEGORY_EMOJIS = {
+  "Squishies": "🫧",
+  "Plush": "🧸",
+  "Cards": "🃏",
+  "Dolls": "👧",
+  "Collectibles": "🎯",
+  "Action Figures": "🦸",
+};
+
+// Retailer URL mappings
+const RETAILER_URLS = {
+  "Target": "https://www.target.com/s?searchTerm=",
+  "Walmart": "https://www.walmart.com/search?q=",
+  "Amazon": "https://www.amazon.com/s?k=",
+  "GameStop": "https://www.gamestop.com/search/?q=",
+  "Hot Topic": "https://www.hottopic.com/search?q=",
+  "Nordstrom": "https://www.nordstrom.com/sr?keyword=",
+};
+
 export default function ToyCard({ toy, content, showPrediction }) {
   const [expanded, setExpanded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const status = toy.status || "Emerging";
   const statusStyle = STATUS_COLORS[status] || STATUS_COLORS["Emerging"];
@@ -35,6 +56,9 @@ export default function ToyCard({ toy, content, showPrediction }) {
     : JSON.parse(toy.retailers || "[]");
 
   const heatPct = Math.min(100, Math.max(0, toy.heat_score || 0));
+  
+  // Generate search-friendly product name
+  const searchQuery = encodeURIComponent(`${toy.brand} ${toy.name}`);
 
   return (
     <article className="toy-card" onClick={() => setExpanded((p) => !p)}>
@@ -80,10 +104,20 @@ export default function ToyCard({ toy, content, showPrediction }) {
           </div>
         </div>
 
-        {/* Toy image placeholder */}
-        {toy.image_url && (
+        {/* Toy image with fallback */}
+        {toy.image_url && !imageError ? (
           <div className="card-image">
-            <img src={toy.image_url} alt={toy.name} loading="lazy" />
+            <img 
+              src={toy.image_url} 
+              alt={toy.name} 
+              loading="lazy"
+              onError={() => setImageError(true)}
+            />
+          </div>
+        ) : (
+          <div className="card-image-placeholder">
+            <div className="placeholder-icon">{CATEGORY_EMOJIS[toy.category] || "🎁"}</div>
+            <span className="placeholder-text">{toy.category}</span>
           </div>
         )}
 
@@ -91,7 +125,7 @@ export default function ToyCard({ toy, content, showPrediction }) {
         <div className="card-body">
           <p className="toy-brand">{toy.brand}</p>
           <h3 className="toy-name">{toy.name}</h3>
-          <p className="toy-age">Ages {toy.age_range}</p>
+          {toy.age_range && <p className="toy-age">Ages {toy.age_range}</p>}
 
           {content?.card_description && (
             <p className="card-description">{content.card_description}</p>
@@ -100,10 +134,12 @@ export default function ToyCard({ toy, content, showPrediction }) {
 
         {/* Price + stock row */}
         <div className="card-stats">
-          <div className="stat">
-            <span className="stat-label">RETAIL</span>
-            <span className="stat-value">${toy.retail_price?.toFixed(2)}</span>
-          </div>
+          {toy.retail_price && (
+            <div className="stat">
+              <span className="stat-label">RETAIL</span>
+              <span className="stat-value">${toy.retail_price.toFixed(2)}</span>
+            </div>
+          )}
           <div className="stat">
             <span className="stat-label">STOCK RISK</span>
             <span className="stat-value" style={{ color: stockColor }}>
@@ -131,9 +167,25 @@ export default function ToyCard({ toy, content, showPrediction }) {
               <div className="retailers">
                 <span className="retailers-label">Where to buy</span>
                 <div className="retailer-chips">
-                  {retailers.map((r) => (
-                    <span key={r} className="retailer-chip">{r}</span>
-                  ))}
+                  {retailers.map((r) => {
+                    const baseUrl = RETAILER_URLS[r];
+                    const url = baseUrl ? `${baseUrl}${searchQuery}` : null;
+                    
+                    return url ? (
+                      <a
+                        key={r}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="retailer-chip retailer-link"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {r} →
+                      </a>
+                    ) : (
+                      <span key={r} className="retailer-chip">{r}</span>
+                    );
+                  })}
                 </div>
               </div>
             )}
