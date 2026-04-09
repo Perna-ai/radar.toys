@@ -22,16 +22,6 @@ const TAG_STYLES = {
   TRENDING:        { bg: "rgba(52,199,89,0.12)", color: "#1a7a35", border: "rgba(52,199,89,0.3)" },
 };
 
-// Category-specific emojis for placeholders
-const CATEGORY_EMOJIS = {
-  "Squishies": "🫧",
-  "Plush": "🧸",
-  "Cards": "🃏",
-  "Dolls": "👧",
-  "Collectibles": "🎯",
-  "Action Figures": "🦸",
-};
-
 // Retailer URL mappings
 const RETAILER_URLS = {
   "Target": "https://www.target.com/s?searchTerm=",
@@ -45,7 +35,6 @@ const RETAILER_URLS = {
 export default function ToyCard({ toy, content, showPrediction }) {
   const [expanded, setExpanded] = useState(false);
   const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   const status = toy.status || "Emerging";
   const statusStyle = STATUS_COLORS[status] || STATUS_COLORS["Emerging"];
@@ -108,19 +97,16 @@ export default function ToyCard({ toy, content, showPrediction }) {
         {/* Toy image with fallback */}
         {toy.image_url && !imageError ? (
           <div className="card-image">
-            {!imageLoaded && <div className="image-skeleton" />}
             <img 
               src={toy.image_url} 
               alt={toy.name} 
               loading="lazy"
-              className={imageLoaded ? "image-loaded" : "image-loading"}
-              onLoad={() => setImageLoaded(true)}
               onError={() => setImageError(true)}
             />
           </div>
         ) : (
           <div className="card-image-placeholder">
-            <div className="placeholder-icon">{CATEGORY_EMOJIS[toy.category] || "🎁"}</div>
+            <div className="placeholder-icon">🎁</div>
             <span className="placeholder-text">{toy.category}</span>
           </div>
         )}
@@ -184,7 +170,7 @@ export default function ToyCard({ toy, content, showPrediction }) {
                         className="retailer-chip retailer-link"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {r}
+                        {r} →
                       </a>
                     ) : (
                       <span key={r} className="retailer-chip">{r}</span>

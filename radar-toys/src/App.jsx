@@ -7,6 +7,7 @@ import FilterBar from "./components/FilterBar";
 import SortBar from "./components/SortBar";
 import PredictionsSection from "./components/PredictionsSection";
 import EmailSignup from "./components/EmailSignup";
+import EmptyState from "./components/EmptyState";
 
 export default function App() {
   const [toys, setToys] = useState([]);
@@ -101,6 +102,9 @@ export default function App() {
             )}
             {allFiltered.length > 0 && (
               <Section title="📦 All Products" subtitle="Browse the full catalog" toys={allFiltered} content={content} />
+            )}
+            {filtered.length === 0 && (
+              <EmptyState filter={filter} onReset={() => setFilter("all")} />
             )}
             <EmailSignup />
           </>

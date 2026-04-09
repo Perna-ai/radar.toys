@@ -1,0 +1,156 @@
+/* RADAR.TOYS FRONTEND IMPROVEMENTS - April 4, 2026 */
+/* Add these styles to index.css */
+
+/* Image placeholder for missing/broken images */
+.card-image-placeholder {
+  margin: 0 -16px 12px;
+  height: 160px;
+  background: linear-gradient(135deg, #F5F4F0 0%, #E8E8E4 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.placeholder-icon {
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+.placeholder-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #999;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Clickable retailer links */
+.retailer-link {
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.retailer-link:hover {
+  background: var(--purple);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(155, 48, 255, 0.3);
+}
+
+/* Better mobile responsiveness */
+@media (max-width: 768px) {
+  .toy-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .filter-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+  }
+  
+  .filter-chip {
+    white-space: nowrap;
+  }
+  
+  .hero {
+    padding: 40px 20px 40px;
+  }
+  
+  .hero-title {
+    font-size: 36px;
+  }
+  
+  .section-title {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .toy-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1025px) {
+  .toy-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Loading state improvements */
+.loading-state {
+  text-align: center;
+  padding: 60px 20px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.loading-dots span {
+  width: 12px;
+  height: 12px;
+  background: var(--purple);
+  border-radius: 50%;
+  animation: loadingBounce 0.6s infinite alternate;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loadingBounce {
+  from { transform: translateY(0); opacity: 0.4; }
+  to { transform: translateY(-10px); opacity: 1; }
+}
+
+.loading-state p {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  color: #999;
+  letter-spacing: 0.05em;
+}
+
+/* Empty state when no products match filter */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #F5F4F0;
+  border-radius: 20px;
+  margin: 40px 0;
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.empty-state h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  color: #999;
+  font-size: 14px;
+}
